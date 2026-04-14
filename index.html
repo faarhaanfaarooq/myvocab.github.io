@@ -216,6 +216,20 @@
         font-size: 2.1rem;
         font-weight: 700;
         margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 12px;
+      }
+      .speaker-btn {
+        cursor: pointer;
+        font-size: 1.4rem;
+        opacity: 0.8;
+        transition: transform 0.1s;
+      }
+      .speaker-btn:hover {
+        transform: scale(1.1);
+        opacity: 1;
       }
       .card-hint {
         font-size: 0.85rem;
@@ -486,7 +500,18 @@
         <div class="card-inner" id="card-inner">
           <div class="card-face card-front">
             <div class="card-num" id="cf-num"></div>
-            <div class="card-word" id="cf-word"></div>
+            <div class="card-word">
+              <span id="cf-word"></span>
+              <span
+                class="speaker-btn"
+                onclick="
+                  event.stopPropagation();
+                  speakWord();
+                "
+                title="Listen pronunciation"
+                >🔊</span
+              >
+            </div>
             <div class="card-hint">👆 Click to reveal meaning</div>
           </div>
           <div class="card-face card-back">
@@ -3047,6 +3072,17 @@
           renderCard();
         }
       }
+
+      function speakWord() {
+        const w = words[order[currentIndex]];
+        const synth = window.speechSynthesis;
+        if (!synth) return;
+        const utter = new SpeechSynthesisUtterance(w.w);
+        utter.lang = "en-US";
+        utter.rate = 0.9;
+        synth.speak(utter);
+      }
+
       function shuffleCards() {
         for (let i = order.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
